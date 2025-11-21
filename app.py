@@ -1,7 +1,3 @@
-import re
-from datetime import datetime
-from backend.api import api_bp  
-
 from flask import Flask, render_template, send_from_directory, url_for
 from flask_uploads import UploadSet, IMAGES, configure_uploads
 from flask_wtf import FlaskForm
@@ -77,6 +73,3 @@ def browse():
         form=form
     )
 
-
-# API routes
-app.register_blueprint(api_bp, url_prefix="/api/v1")
