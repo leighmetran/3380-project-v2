@@ -76,6 +76,22 @@
         </div>
     </div>
 
+    <!-- Image Zoom Modal -->
+    <div id="imageModal" class="image-modal">
+        <div class="modal-box">
+            <span class="close-modal">&times;</span>
+
+            <img class="modal-content" id="zoomedImage">
+
+            <!-- Item details -->
+            <div class="modal-details">
+                <h2 id="modalName"></h2>
+                <p id="modalCategory"></p>
+                <div id="modalTags"></div>
+            </div>
+        </div>
+    </div>
+
     <script>
         let currentPage = 1;
         let currentCategory = 'all';
@@ -169,6 +185,56 @@
 document.addEventListener('click', () => {
     document.querySelectorAll('.item-menu').forEach(m => m.classList.remove('active'));
 });
+        // Image zoom functionality
+        document.addEventListener('DOMContentLoaded', function () {
+            const modal = document.getElementById("imageModal");
+            const modalImg = document.getElementById("zoomedImage");
+            const closeBtn = document.querySelector(".close-modal");
+
+            const modalName = document.getElementById("modalName");
+            const modalCategory = document.getElementById("modalCategory");
+            const modalTags = document.getElementById("modalTags");
+
+            document.querySelectorAll(".item-image").forEach(img => {
+                img.addEventListener("click", () => {
+                    const card = img.closest(".item-card");
+
+                    // Get data
+                    const name = card.dataset.name;
+                    const category = card.dataset.category;
+                    const tags = card.querySelectorAll(".tag");
+
+                    // Show modal
+                    modal.style.display = "flex";
+                    modalImg.src = img.src;
+
+                    // Fill in text
+                    modalName.textContent = name;
+                    modalCategory.textContent = category;
+
+                    // Clear old tags
+                    modalTags.innerHTML = "";
+
+                    // Add tags
+                    tags.forEach(tag => {
+                        const span = document.createElement("span");
+                        span.textContent = tag.textContent;
+                        modalTags.appendChild(span);
+                    });
+                });
+            });
+
+            closeBtn.onclick = () => {
+                modal.style.display = "none";
+            };
+
+            modal.addEventListener("click", e => {
+                if (e.target === modal) {
+                    modal.style.display = "none";
+                }
+            });
+        });
+
     </script>
 </body>
 </html>

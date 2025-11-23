@@ -96,14 +96,14 @@
             font-weight: 500;
         }
 
-        .filter-btn:hover, .sort-btn:hover {
+        .filter-btn:hover, .sort-btn:hover, .custom-items-badge:hover {
             border-color: #E18AAA;
         }
 
         .filter-btn.active, .sort-btn.active {
-            background-color: #000;
-            color: #fff;
-            border-color: #000;
+            background-color: #E18AAA;
+            color: #000000;
+            border-color: #E18AAA;
         }
 
         select.sort-select {
@@ -279,3 +279,86 @@ form {
   width: 30%;
   margin: 0 auto;
 }
+        /* Slight zoom animation (optional, currently not used but fine to keep) */
+        @keyframes zoomIn {
+            from { transform: scale(0.8); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        /* Cursor hint */
+        .item-image {
+            cursor: zoom-in;
+        }
+
+        /* Fullscreen dark overlay */
+        .image-modal {
+            display: none;
+            position: fixed;
+            inset: 0; /* top:0; right:0; bottom:0; left:0 */
+            background: rgba(0, 0, 0, 0.92);
+            z-index: 9999;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* Container for image + text */
+        .modal-box {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            max-width: 100vw;
+            max-height: 100vh;
+        }
+
+        /* BIG image in the popup */
+        .modal-content {
+            width: 65vw;          /* smaller than before */
+            max-height: 70vh;     /* shorter height */
+            object-fit: contain;
+            border-radius: 16px;
+            margin-bottom: 20px;
+        }
+
+        /* Close X */
+        .close-modal {
+            position: absolute;
+            top: -40px;
+            right: 0;
+            font-size: 38px;
+            color: white;
+            cursor: pointer;
+        }
+
+        /* Details text */
+        .modal-details {
+            text-align: center;
+            color: white;
+            max-width: 80vw;
+        }
+
+        #modalName {
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+
+        #modalCategory {
+            font-size: 1.2rem;
+            opacity: 0.8;
+            margin-bottom: 10px;
+        }
+
+        /* Tags styling */
+        #modalTags {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        #modalTags span {
+            background: rgba(255,255,255,0.15);
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+        }

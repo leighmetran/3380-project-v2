@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Login</title>
+    <!-- Adjust path if your CSS is somewhere else -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/branding.css') }}">
+</head>
+<body>
+<div class="container">
+    <!-- Header -->
+    <header class="header">
+        <h1>Dress Me</h1>
+    </header>
+
+    <h1 style="margin-bottom: 20px; display: flex; justify-content: center;">Log In</h1>
+    <!-- Optional flash messages -->
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            <ul style="margin-bottom: 20px; color: red; list-style: none;">
+                {% for message in messages %}
+                    <li>{{ message }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    {% endwith %}
+
+    <!-- Login Form -->
+    <form method="POST" action="{{ url_for('login') }}">
+        <!-- If using Flask-WTF, include CSRF token -->
+        {# {{ form.hidden_tag() }} #}
+
+        <div style="margin-bottom: 15px;">
+            <label for="username" style="display:block; margin-bottom:5px; font-weight:600;">
+                Username
+            </label>
+            <input
+                    type="text"
+                    id="username"
+                    name="username"
+                    required
+                    style="width:100%; padding:10px 12px; border:2px solid #e0e0e0; border-radius:10px; outline:none;"
+            >
+        </div>
+
+        <div style="margin-bottom: 20px;">
+            <label for="password" style="display:block; margin-bottom:5px; font-weight:600;">
+                Password
+            </label>
+            <input
+                    type="password"
+                    id="password"
+                    name="password"
+                    required
+                    style="width:100%; padding:10px 12px; border:2px solid #e0e0e0; border-radius:10px; outline:none;"
+            >
+        </div>
+
+        <button type="submit" class="custom-items-badge" style="width:100%; text-align:center;">
+            Log In
+        </button>
+        <!-- Link to register -->
+        <p style="margin-top:15px; text-align:center;">
+            Don't have an account?
+            <a href="{{ url_for('register') }}">Register here</a>.
+        </p>
+    </form>
+</div>
+</body>
+</html>
