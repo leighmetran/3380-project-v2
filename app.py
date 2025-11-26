@@ -193,3 +193,23 @@ def register():
         return redirect(url_for("browse"))
 
     return render_template("register.html", form=form)
+
+@app.route("/build-outfit")
+@login_required
+def build_outfit():
+    # Get items by category
+    tops = ClothingItem.query.filter_by(category="tops").all()
+    bottoms = ClothingItem.query.filter_by(category="bottoms").all()
+    shoes = ClothingItem.query.filter_by(category="shoes").all()
+
+    # Add image_url to each item (same idea as in browse())
+    for item in tops + bottoms + shoes:
+        item.image_url = url_for('get_file', filename=item.image_filename)
+
+# Now outfit.html can use item.image_url
+    return render_template(
+     "outfit.html",
+        tops=tops,
+        bottoms=bottoms,
+        shoes=shoes
+    )

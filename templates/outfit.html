@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dress Me – Build Outfit</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/branding.css') }}">
+
+
+    {# <link rel="stylesheet" href="{{ url_for('static', filename='css/outfit.css') }}"> #}
+
+    <style>
+
+        .outfit-layout {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 30px;
+            margin-top: 20px;
+        }
+
+        .selector-card label {
+            font-size: 0.9rem;
+            font-weight: 500;
+            display: block;
+            margin-bottom: 6px;
+        }
+
+        .selector-card select {
+            width: 100%;
+            padding: 10px 12px;
+            border-radius: 10px;
+            border: 1px solid #e0e0e0;
+            font-size: 0.9rem;
+            outline: none;
+        }
+
+        .selector-card select:focus {
+            border-color: #000;
+        }
+
+        .outfit-preview-box {
+            border: 2px dashed #e0e0e0;
+            border-radius: 15px;
+            padding: 20px;
+            min-height: 260px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* FULL IMAGE, NO CROPPING, NO BACKGROUND */
+        .outfit-slot {
+            width: 100%;
+            max-width: 400px;   /* you can adjust this width */
+            padding: 0;
+            margin: 0;
+            background: none;   /* removes box background */
+            border: none;       /* removes borders */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* KEEP ORIGINAL PROPORTIONS — FULL IMAGE */
+        .outfit-slot img {
+            width: 100%;         /* fill the width of the box */
+            height: auto;        /* keep original size */
+            object-fit: contain; /* show full picture with no cropping */
+            display: block;
+            background: none;    /* remove gray bg */
+            border-radius: 0;    /* optional */
+        }
+
+        /* Remove labels under pictures since they get in the way */
+        .outfit-slot p {
+            display: none;
+        }
+
+        /* Make all the images stack with no gaps */
+        #outfitPreview {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0;
+        }
+
+        .outfit-slot p {
+            margin-top: 6px;
+            font-size: 0.85rem;
+            color: #555;
+            text-align: center;
+        }
+
+        .outfit-empty-text {
+            font-size: 0.9rem;
+            color: #999;
+            text-align: center;
+        }
+
+        @media (max-width: 768px) {
+            .outfit-slot img {
+                height: 150px;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <!-- Header (same style as browse.html) -->
+    <header class="header">
+        <h1>Dress Me</h1>
+        <div class="header-actions">
+            <!-- Go to upload page -->
+            <button class="custom-items-badge"
+                    onclick="window.location.href='{{ url_for('upload_image') }}'">
+                UPLOAD
+            </button>
+            <!-- Back to browse page -->
+            <button class="custom-items-badge"
+                    onclick="window.location.href='{{ url_for('browse') }}'">
+                RETURN TO CLOSET
+            </button>
+        </div>
+    </header>
+
+    <h2 style="font-size: 1.4rem; margin-bottom: 8px;">Build an Outfit</h2>
+    <p style="font-size: 0.95rem; color: #666; margin-bottom: 20px;">
+        Choose one top, one pair of bottoms, and one pair of shoes from your uploaded items to build a full look.
+    </p>
+
+    <section class="outfit-layout">
+        <!-- Top selector -->
+        <article class="item-card selector-card">
+            <div class="item-info">
+                <div class="item-category">Top</div>
+                <div class="item-name">Select a Top</div>
+
+                <div class="item-tags" style="margin-bottom: 10px;">
+                    <span class="tag">Blouses</span>
+                    <span class="tag">Shirts</span>
+                    <span class="tag">Jackets</span>
+                </div>
+
+                <label for="topSelect">Top:</label>
+                <select id="topSelect">
+                    <option value="">-- Choose a top --</option>
+                    {% for item in tops %}
+                        <option value="{{ item.id }}"
+                                data-image="{{ item.image_url }}"
+                                data-name="{{ item.name }}">
+                            {{ item.name }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+        </article>
+
+        <!-- Bottoms selector -->
+        <article class="item-card selector-card">
+            <div class="item-info">
+                <div class="item-category">Bottoms</div>
+                <div class="item-name">Select Bottoms</div>
+
+                <div class="item-tags" style="margin-bottom: 10px;">
+                    <span class="tag">Trousers</span>
+                    <span class="tag">Jeans</span>
+                    <span class="tag">Skirts</span>
+                </div>
+
+                <label for="bottomSelect">Bottoms:</label>
+                <select id="bottomSelect">
+                    <option value="">-- Choose bottoms --</option>
+                    {% for item in bottoms %}
+                        <option value="{{ item.id }}"
+                                data-image="{{ item.image_url }}"
+                                data-name="{{ item.name }}">
+                            {{ item.name }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+        </article>
+
+        <!-- Shoes selector -->
+        <article class="item-card selector-card">
+            <div class="item-info">
+                <div class="item-category">Shoes</div>
+                <div class="item-name">Select Shoes</div>
+
+                <div class="item-tags" style="margin-bottom: 10px;">
+                    <span class="tag">Heels</span>
+                    <span class="tag">Flats</span>
+                    <span class="tag">Loafers</span>
+                </div>
+
+                <label for="shoesSelect">Shoes:</label>
+                <select id="shoesSelect">
+                    <option value="">-- Choose shoes --</option>
+                    {% for item in shoes %}
+                        <option value="{{ item.id }}"
+                                data-image="{{ item.image_url }}"
+                                data-name="{{ item.name }}">
+                            {{ item.name }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+        </article>
+
+        <!-- Outfit preview, full-width on bottom -->
+        <article class="item-card" style="grid-column: 1 / -1;">
+            <div class="item-info">
+                <div class="item-category">Outfit Preview</div>
+                <div class="item-name">Your Complete Look</div>
+
+                <div class="outfit-preview-box" id="outfitPreview">
+                    <p class="outfit-empty-text" id="outfitEmptyText">
+                        Select a top, bottoms, and shoes to see your outfit here.
+                    </p>
+
+                    <div class="outfit-slot" id="topSlot" style="display: none;">
+                        <img id="topImage" src="" alt="Selected top">
+                        <p id="topLabel"></p>
+                    </div>
+
+                    <div class="outfit-slot" id="bottomSlot" style="display: none;">
+                        <img id="bottomImage" src="" alt="Selected bottoms">
+                        <p id="bottomLabel"></p>
+                    </div>
+
+                    <div class="outfit-slot" id="shoesSlot" style="display: none;">
+                        <img id="shoesImage" src="" alt="Selected shoes">
+                        <p id="shoesLabel"></p>
+                    </div>
+                </div>
+            </div>
+        </article>
+    </section>
+</div>
+
+<script>
+    function updateOutfitPreview() {
+        const topSelect = document.getElementById('topSelect');
+        const bottomSelect = document.getElementById('bottomSelect');
+        const shoesSelect = document.getElementById('shoesSelect');
+
+        const topOption    = topSelect.options[topSelect.selectedIndex];
+        const bottomOption = bottomSelect.options[bottomSelect.selectedIndex];
+        const shoesOption  = shoesSelect.options[shoesSelect.selectedIndex];
+
+        const topSlot    = document.getElementById('topSlot');
+        const bottomSlot = document.getElementById('bottomSlot');
+        const shoesSlot  = document.getElementById('shoesSlot');
+
+        const topImage    = document.getElementById('topImage');
+        const bottomImage = document.getElementById('bottomImage');
+        const shoesImage  = document.getElementById('shoesImage');
+
+        const topLabel    = document.getElementById('topLabel');
+        const bottomLabel = document.getElementById('bottomLabel');
+        const shoesLabel  = document.getElementById('shoesLabel');
+
+        const emptyText = document.getElementById('outfitEmptyText');
+
+        let anySelected = false;
+
+        // Top
+        if (topSelect.value) {
+            const img = topOption.getAttribute('data-image');
+            const name = topOption.getAttribute('data-name');
+            topImage.src = img;
+            topLabel.textContent = name;
+            topSlot.style.display = 'flex';
+            anySelected = true;
+        } else {
+            topSlot.style.display = 'none';
+        }
+
+        // Bottoms
+        if (bottomSelect.value) {
+            const img = bottomOption.getAttribute('data-image');
+            const name = bottomOption.getAttribute('data-name');
+            bottomImage.src = img;
+            bottomLabel.textContent = name;
+            bottomSlot.style.display = 'flex';
+            anySelected = true;
+        } else {
+            bottomSlot.style.display = 'none';
+        }
+
+        // Shoes
+        if (shoesSelect.value) {
+            const img = shoesOption.getAttribute('data-image');
+            const name = shoesOption.getAttribute('data-name');
+            shoesImage.src = img;
+            shoesLabel.textContent = name;
+            shoesSlot.style.display = 'flex';
+            anySelected = true;
+        } else {
+            shoesSlot.style.display = 'none';
+        }
+
+        // Toggle empty text
+        if (anySelected) {
+            emptyText.style.display = 'none';
+        } else {
+            emptyText.style.display = 'block';
+        }
+    }
+
+    document.getElementById('topSelect').addEventListener('change', updateOutfitPreview);
+    document.getElementById('bottomSelect').addEventListener('change', updateOutfitPreview);
+    document.getElementById('shoesSelect').addEventListener('change', updateOutfitPreview);
+</script>
+</body>
+</html>
