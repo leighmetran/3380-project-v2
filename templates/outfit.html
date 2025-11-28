@@ -219,36 +219,27 @@
                 <div class="item-category">Outfit Preview</div>
                 <div class="item-name">Your Complete Look</div>
 
-    <div class="outfit-preview-box" id="outfitPreview">
-      {% if generated_outfit is defined %}
-        <!-- Coming from /generate-outfit: show the random outfit -->
-        {% for item in generated_outfit %}
-            <div class="outfit-slot">
-                <img src="{{ item.image_url }}" alt="{{ item.name }}">
-            </div>
-        {% endfor %}
-    {% else %}
-        <!-- Normal behavior when user is manually choosing -->
-        <p class="outfit-empty-text" id="outfitEmptyText">
-            Select a top, bottoms, and shoes to see your outfit here.
-        </p>
+   <div class="outfit-preview-box" id="outfitPreview">
+    <p class="outfit-empty-text" id="outfitEmptyText">
+        Select a top, bottoms, and shoes to see your outfit here.
+    </p>
 
-        <div class="outfit-slot" id="topSlot" style="display: none;">
-            <img id="topImage" src="" alt="Selected top">
-            <p id="topLabel"></p>
-        </div>
+    <div class="outfit-slot" id="topSlot" style="display: none;">
+        <img id="topImage" src="" alt="Selected top">
+        <p id="topLabel"></p>
+    </div>
 
-        <div class="outfit-slot" id="bottomSlot" style="display: none;">
-            <img id="bottomImage" src="" alt="Selected bottoms">
-            <p id="bottomLabel"></p>
-        </div>
+    <div class="outfit-slot" id="bottomSlot" style="display: none;">
+        <img id="bottomImage" src="" alt="Selected bottoms">
+        <p id="bottomLabel"></p>
+    </div>
 
-        <div class="outfit-slot" id="shoesSlot" style="display: none;">
-            <img id="shoesImage" src="" alt="Selected shoes">
-            <p id="shoesLabel"></p>
-        </div>
-    {% endif %}
+    <div class="outfit-slot" id="shoesSlot" style="display: none;">
+        <img id="shoesImage" src="" alt="Selected shoes">
+        <p id="shoesLabel"></p>
+    </div>
 </div>
+
 
             </div>
         </article>
@@ -256,6 +247,10 @@
 </div>
 
 <script>
+        // IDs coming from Flask (empty strings if not set)
+    const preselectedTopId = "{{ selected_top_id or '' }}";
+    const preselectedBottomId = "{{ selected_bottom_id or '' }}";
+    const preselectedShoesId = "{{ selected_shoes_id or '' }}";
 function updateOutfitPreview() {
         const topSelect = document.getElementById('topSelect');
         const bottomSelect = document.getElementById('bottomSelect');
@@ -324,10 +319,30 @@ function updateOutfitPreview() {
             emptyText.style.display = 'block';
         }
     }
+    function applyPreselected() {
+        const topSelect = document.getElementById('topSelect');
+        const bottomSelect = document.getElementById('bottomSelect');
+        const shoesSelect = document.getElementById('shoesSelect');
 
-    document.getElementById('topSelect').addEventListener('change', updateOutfitPreview);
-    document.getElementById('bottomSelect').addEventListener('change', updateOutfitPreview);
-    document.getElementById('shoesSelect').addEventListener('change', updateOutfitPreview);
+        // If we came from /generate-outfit, these will have values
+        if (preselectedTopId) topSelect.value = preselectedTopId;
+        if (preselectedBottomId) bottomSelect.value = preselectedBottomId;
+        if (preselectedShoesId) shoesSelect.value = preselectedShoesId;
+
+        if (preselectedTopId || preselectedBottomId || preselectedShoesId) {
+            updateOutfitPreview();
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+        // Live updates when user changes any select
+        document.getElementById('topSelect').addEventListener('change', updateOutfitPreview);
+        document.getElementById('bottomSelect').addEventListener('change', updateOutfitPreview);
+        document.getElementById('shoesSelect').addEventListener('change', updateOutfitPreview);
+
+        // If random outfit was generated, preselect dropdowns & show it
+        applyPreselected();
+    });
 </script>
 </body>
 </html>

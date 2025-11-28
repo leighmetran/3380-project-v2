@@ -256,6 +256,8 @@ def generate_outfit():
         tops=tops,
         bottoms=bottoms,
         shoes=shoes,
-        generated_outfit=outfit
+        selected_top_id=top.id,
+        selected_bottom_id=bottom.id,
+        selected_shoes_id=shoe.id
     )
 
