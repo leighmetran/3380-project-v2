@@ -9,7 +9,9 @@ from forms import LoginForm, RegistrationForm  # RegistrationForm is optional if
 from models import db, ClothingItem, User
 import os
 import json
-
+import random
+from flask import render_template, redirect, url_for, flash
+from flask_login import login_required, current_user
 
 app = Flask(__name__)
 app.config['SECRET_KEY']= 'asklsh'
@@ -198,9 +200,9 @@ def register():
 @login_required
 def build_outfit():
     # Get items by category
-    tops = ClothingItem.query.filter_by(category="tops").all()
-    bottoms = ClothingItem.query.filter_by(category="bottoms").all()
-    shoes = ClothingItem.query.filter_by(category="shoes").all()
+    tops = ClothingItem.query.filter_by(user_id=current_user.id, category="tops").all()
+    bottoms = ClothingItem.query.filter_by(user_id=current_user.id, category="bottoms").all()
+    shoes = ClothingItem.query.filter_by(user_id=current_user.id, category="shoes").all()
 
     # Add image_url to each item (same idea as in browse())
     for item in tops + bottoms + shoes:
@@ -213,3 +215,47 @@ def build_outfit():
         bottoms=bottoms,
         shoes=shoes
     )
+@app.route("/generate-outfit")
+@login_required
+def generate_outfit():
+    # Get all items for THIS user by category
+    tops = ClothingItem.query.filter_by(
+        user_id=current_user.id, category="tops"
+    ).all()
+    bottoms = ClothingItem.query.filter_by(
+        user_id=current_user.id, category="bottoms"
+    ).all()
+    shoes = ClothingItem.query.filter_by(
+        user_id=current_user.id, category="shoes"
+    ).all()
+
+    # Build image URLs
+    for item in tops + bottoms + shoes:
+        item.image_url = url_for('get_file', filename=item.image_filename)
+
+    def pick_one(items):
+        return random.choice(items) if items else None
+
+    top = pick_one(tops)
+    bottom = pick_one(bottoms)
+    shoe = pick_one(shoes)
+
+    # If anything is missing, go back to build-outfit page
+    if not (top and bottom and shoe):
+        flash("You need at least one top, bottom, and pair of shoes to generate an outfit.", "warning")
+        return redirect(url_for("build_outfit"))
+
+    # Put the three chosen items in a list
+    outfit = [top, bottom, shoe]
+
+    # Render outfit.html with:
+    #  - all items (tops/bottoms/shoes) for the dropdowns
+    #  - generated_outfit list for the preview
+    return render_template(
+        "outfit.html",
+        tops=tops,
+        bottoms=bottoms,
+        shoes=shoes,
+        generated_outfit=outfit
+    )
+

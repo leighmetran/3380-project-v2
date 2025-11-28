@@ -130,7 +130,10 @@
     <p style="font-size: 0.95rem; color: #666; margin-bottom: 20px;">
         Choose one top, one pair of bottoms, and one pair of shoes from your uploaded items to build a full look.
     </p>
-
+  <button class="custom-items-badge"
+            onclick="window.location.href='{{ url_for('generate_outfit') }}'">
+        GENERATE RANDOM OUTFIT
+    </button>
     <section class="outfit-layout">
         <!-- Top selector -->
         <article class="item-card selector-card">
@@ -216,33 +219,44 @@
                 <div class="item-category">Outfit Preview</div>
                 <div class="item-name">Your Complete Look</div>
 
-                <div class="outfit-preview-box" id="outfitPreview">
-                    <p class="outfit-empty-text" id="outfitEmptyText">
-                        Select a top, bottoms, and shoes to see your outfit here.
-                    </p>
+    <div class="outfit-preview-box" id="outfitPreview">
+      {% if generated_outfit is defined %}
+        <!-- Coming from /generate-outfit: show the random outfit -->
+        {% for item in generated_outfit %}
+            <div class="outfit-slot">
+                <img src="{{ item.image_url }}" alt="{{ item.name }}">
+            </div>
+        {% endfor %}
+    {% else %}
+        <!-- Normal behavior when user is manually choosing -->
+        <p class="outfit-empty-text" id="outfitEmptyText">
+            Select a top, bottoms, and shoes to see your outfit here.
+        </p>
 
-                    <div class="outfit-slot" id="topSlot" style="display: none;">
-                        <img id="topImage" src="" alt="Selected top">
-                        <p id="topLabel"></p>
-                    </div>
+        <div class="outfit-slot" id="topSlot" style="display: none;">
+            <img id="topImage" src="" alt="Selected top">
+            <p id="topLabel"></p>
+        </div>
 
-                    <div class="outfit-slot" id="bottomSlot" style="display: none;">
-                        <img id="bottomImage" src="" alt="Selected bottoms">
-                        <p id="bottomLabel"></p>
-                    </div>
+        <div class="outfit-slot" id="bottomSlot" style="display: none;">
+            <img id="bottomImage" src="" alt="Selected bottoms">
+            <p id="bottomLabel"></p>
+        </div>
 
-                    <div class="outfit-slot" id="shoesSlot" style="display: none;">
-                        <img id="shoesImage" src="" alt="Selected shoes">
-                        <p id="shoesLabel"></p>
-                    </div>
-                </div>
+        <div class="outfit-slot" id="shoesSlot" style="display: none;">
+            <img id="shoesImage" src="" alt="Selected shoes">
+            <p id="shoesLabel"></p>
+        </div>
+    {% endif %}
+</div>
+
             </div>
         </article>
     </section>
 </div>
 
 <script>
-    function updateOutfitPreview() {
+function updateOutfitPreview() {
         const topSelect = document.getElementById('topSelect');
         const bottomSelect = document.getElementById('bottomSelect');
         const shoesSelect = document.getElementById('shoesSelect');
