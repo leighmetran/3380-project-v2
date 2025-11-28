@@ -42,8 +42,26 @@
                 UPLOAD
             </button>
         </p>
-    </div>
+        </div>
     </form>
+    </div>
+
+    <!-- First-Time Instructions Message Box -->
+<div id="instructionsBox" class="message-box">
+  <div class="message-content">
+    <span class="close">&times;</span>
+
+    <h2 style="text-align: center;margin-bottom: 15px;">Welcome to Dress Me!</h2>
+    <p style="margin-bottom: 10px;"><b>Here’s how to upload your clothing items:</b></p>
+
+    <ul class="instructions-list">
+      <li>Choose a clear, well-lit photo of your clothing item</li>
+      <li>Select the correct category (tops, bottoms, etc.)</li>
+      <li>Add optional tags (color, season, style)</li>
+      <li>Click <strong>Upload</strong> to add it to your closet!</li>
+    </ul>
+
+  </div>
 </div>
 
     <script>
@@ -53,7 +71,7 @@
     customButton.addEventListener('click', () => {
     fileInput.click(); // Open file selector
     });
-
+    //image preview
     function previewImage(event) {
         const preview = document.getElementById('preview');
         const input = document.getElementById('photoInput');
@@ -71,9 +89,33 @@
             preview.src = '#';
             preview.style.display = 'none';
             extraFields.style.display = 'none';
+        }
     }
+
+    //pop-up instructions
+    const box = document.getElementById("instructionsBox");
+const closeBtn = document.querySelector(".close");
+
+// Check if they've already seen the instructions
+const seen = localStorage.getItem("seen_instructions_box");
+
+// Show ONLY on first visit
+if (!seen) {
+  box.style.display = "flex";
+  localStorage.setItem("seen_instructions_box", "true");
 }
 
-</script>
+// Close when clicking X
+closeBtn.onclick = () => {
+  box.style.display = "none";
+};
+
+// Close when clicking on the dimmed background
+window.onclick = (event) => {
+  if (event.target === box) {
+    box.style.display = "none";
+  }
+};
+    </script>
 </body>
 </html>
