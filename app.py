@@ -215,8 +215,38 @@ def build_outfit():
         tops=tops,
         bottoms=bottoms,
         shoes=shoes,
+        other=other
+    )
+@app.route("/generate-outfit")
+@login_required
+def generate_outfit():
+    # Get all items for THIS user by category
+    tops = ClothingItem.query.filter_by(user_id=current_user.id, category="tops").all()
+    bottoms = ClothingItem.query.filter_by(user_id=current_user.id, category="bottoms").all()
+    shoes = ClothingItem.query.filter_by(user_id=current_user.id, category="shoes").all()
+
+    # Build image URLs
+    for item in tops + bottoms + shoes:
+        item.image_url = url_for('get_file', filename=item.image_filename)
+
+    def pick_one(items):
+        return random.choice(items) if items else None
+
+    top = pick_one(tops)
+    bottom = pick_one(bottoms)
+    shoe = pick_one(shoes)
+
+    if not (top and bottom and shoe):
+        flash("You need at least one top, bottom, and pair of shoes to generate an outfit.", "warning")
+        return redirect(url_for("build_outfit"))
+
+    # Pass IDs so JS can preselect the dropdowns
+    return render_template(
+        "outfit.html",
+        tops=tops,
+        bottoms=bottoms,
+        shoes=shoes,
         selected_top_id=top.id,
         selected_bottom_id=bottom.id,
         selected_shoes_id=shoe.id
-        other=other
     )
