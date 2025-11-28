@@ -40,7 +40,7 @@ class UploadForm(FlaskForm):
     name = StringField("Item Name")
     category = SelectField(
         "Category", 
-        choices=[("tops","Tops"), ("bottoms","Bottoms"), ("shoes","Shoes"), ("accessories","Accessories")]
+        choices=[("tops","Tops"), ("bottoms","Bottoms"), ("shoes","Shoes"), ("accessories","Accessories"),("other", "Other")]
     )
     tags = StringField("Tags (comma separated)")
     photo = FileField(
@@ -74,7 +74,7 @@ def upload_image():
             category=form.category.data,
             image_filename=filename,
             tags=json.dumps(tags_list),
-            user_id=current_user.id  # 🔑 associate item with the logged-in user
+            user_id=current_user.id  
         )
 
         db.session.add(new_item)
@@ -111,7 +111,7 @@ def browse():
 def delete_item(item_id):
     item = ClothingItem.query.get_or_404(item_id)
 
-    # ✅ Make sure the logged-in user owns this item
+    # Make sure the logged-in user owns this item
     if item.user_id != current_user.id:
         flash("You can only delete your own items.", "danger")
         return redirect(url_for('browse'))
@@ -162,7 +162,7 @@ def login():
     return render_template("login.html", form=form)
 
 
-# --- Logout route (optional but useful) ---
+# --- Logout route ---
 @app.route("/logout")
 def logout():
     logout_user()
@@ -201,6 +201,7 @@ def build_outfit():
     tops = ClothingItem.query.filter_by(category="tops").all()
     bottoms = ClothingItem.query.filter_by(category="bottoms").all()
     shoes = ClothingItem.query.filter_by(category="shoes").all()
+    other = ClothingItem.query.filter_by(category="other").all
 
     # Add image_url to each item (same idea as in browse())
     for item in tops + bottoms + shoes:
@@ -211,5 +212,6 @@ def build_outfit():
      "outfit.html",
         tops=tops,
         bottoms=bottoms,
-        shoes=shoes
+        shoes=shoes,
+        other=other
     )

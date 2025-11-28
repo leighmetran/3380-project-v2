@@ -35,6 +35,7 @@
                 <button class="filter-btn" data-category="bottoms" onclick="filterByCategory('bottoms')">Bottoms</button>
                 <button class="filter-btn" data-category="shoes" onclick="filterByCategory('shoes')">Shoes</button>
                 <button class="filter-btn" data-category="accessories" onclick="filterByCategory('accessories')">Accessories</button>
+                <button class="filter-btn" data-category="other" onclick="filterByCategory('other')">Other</button>
             </div>
 
         </div>
@@ -170,7 +171,7 @@
         document.querySelector('[data-category="all"]').classList.add('active');
 
         document.querySelectorAll('.ellipsis-btn').forEach(btn => {
-    btn.addEventListener('click', e => {
+        btn.addEventListener('click', e => {
         e.stopPropagation(); // prevent closing immediately
         const menu = btn.parentElement;
         menu.classList.toggle('active');
