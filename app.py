@@ -203,7 +203,7 @@ def build_outfit():
     tops = ClothingItem.query.filter_by(category="tops").all()
     bottoms = ClothingItem.query.filter_by(category="bottoms").all()
     shoes = ClothingItem.query.filter_by(category="shoes").all()
-    other = ClothingItem.query.filter_by(category="other").all
+    other = ClothingItem.query.filter_by(category="other").all()
 
     # Add image_url to each item (same idea as in browse())
     for item in tops + bottoms + shoes:
@@ -217,30 +217,49 @@ def build_outfit():
         shoes=shoes,
         other=other
     )
+
 @app.route("/generate-outfit")
 @login_required
 def generate_outfit():
-    # Get all items for THIS user by category
+    weather = request.args.get("weather", "").lower().strip()
+
     tops = ClothingItem.query.filter_by(user_id=current_user.id, category="tops").all()
     bottoms = ClothingItem.query.filter_by(user_id=current_user.id, category="bottoms").all()
     shoes = ClothingItem.query.filter_by(user_id=current_user.id, category="shoes").all()
 
-    # Build image URLs
     for item in tops + bottoms + shoes:
-        item.image_url = url_for('get_file', filename=item.image_filename)
+        item.image_url = url_for("get_file", filename=item.image_filename)
+
+    def filter_by_weather(items):
+        if not weather:
+            return items
+        filtered = []
+        for item in items:
+            try:
+                tags_list = json.loads(item.tags) if item.tags else []
+            except json.JSONDecodeError:
+                tags_list = []
+            for tag in tags_list:
+                if tag.lower().strip() == weather:
+                    filtered.append(item)
+                    break
+        return filtered if filtered else items
+
+    tops_for_choice = filter_by_weather(tops)
+    bottoms_for_choice = filter_by_weather(bottoms)
+    shoes_for_choice = filter_by_weather(shoes)
 
     def pick_one(items):
         return random.choice(items) if items else None
 
-    top = pick_one(tops)
-    bottom = pick_one(bottoms)
-    shoe = pick_one(shoes)
+    top = pick_one(tops_for_choice)
+    bottom = pick_one(bottoms_for_choice)
+    shoe = pick_one(shoes_for_choice)
 
     if not (top and bottom and shoe):
         flash("You need at least one top, bottom, and pair of shoes to generate an outfit.", "warning")
         return redirect(url_for("build_outfit"))
 
-    # Pass IDs so JS can preselect the dropdowns
     return render_template(
         "outfit.html",
         tops=tops,
@@ -250,3 +269,4 @@ def generate_outfit():
         selected_bottom_id=bottom.id,
         selected_shoes_id=shoe.id
     )
+
