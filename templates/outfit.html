@@ -12,12 +12,18 @@
 
     <style>
 
-        .outfit-layout {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-            gap: 30px;
-            margin-top: 20px;
-        }
+.outfit-layout {
+    display: grid;
+    grid-template-columns: 320px 1fr; /* left column fixed, right column flexible */
+    gap: 40px;
+    margin-top: 20px;
+    align-items: start;
+}
+.selector-column {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
 
         .selector-card label {
             font-size: 0.9rem;
@@ -54,11 +60,11 @@
         /* FULL IMAGE, NO CROPPING, NO BACKGROUND */
         .outfit-slot {
             width: 100%;
-            max-width: 400px;   /* you can adjust this width */
+            max-width: 400px;   
             padding: 0;
             margin: 0;
-            background: none;   /* removes box background */
-            border: none;       /* removes borders */
+            background: none;  
+            border: none;   
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -71,10 +77,10 @@
             object-fit: contain; /* show full picture with no cropping */
             display: block;
             background: none;    /* remove gray bg */
-            border-radius: 0;    /* optional */
+            border-radius: 0;    
         }
 
-        /* Remove labels under pictures since they get in the way */
+        /* Remove labels under pictures*/
         .outfit-slot p {
             display: none;
         }
@@ -85,6 +91,13 @@
             flex-direction: column;
             align-items: center;
             gap: 0;
+        }
+        #outfitPreview img {
+            max-width: 100%;        /* prevents horizontal stretching */
+            max-height: 200px;      /* controls vertical size */
+            object-fit: contain;    /* keeps proportions */
+            display: block;
+            margin: 0 auto 10px;    /* centers the image and adds spacing */
         }
 
         .outfit-slot p {
@@ -113,6 +126,10 @@
     <header class="header">
         <h1>Dress Me</h1>
         <div class="header-actions">
+            <button class="custom-items-badge"
+                    onclick="window.location.href='{{ url_for('generate_outfit') }}'">
+                GENERATE RANDOM OUTFIT
+            </button>
             <!-- Go to upload page -->
             <button class="custom-items-badge"
                     onclick="window.location.href='{{ url_for('upload_image') }}'">
@@ -130,11 +147,12 @@
     <p style="font-size: 0.95rem; color: #666; margin-bottom: 20px;">
         Choose one top, one pair of bottoms, and one pair of shoes from your uploaded items to build a full look.
     </p>
-  <button class="custom-items-badge"
-            onclick="window.location.href='{{ url_for('generate_outfit') }}'">
-        GENERATE RANDOM OUTFIT
-    </button>
-    <section class="outfit-layout">
+
+ <section class="outfit-layout">
+
+    <!-- LEFT COLUMN: Stacked selectors -->
+    <div class="selector-column">
+
         <!-- Top selector -->
         <article class="item-card selector-card">
             <div class="item-info">
@@ -151,9 +169,7 @@
                 <select id="topSelect">
                     <option value="">-- Choose a top --</option>
                     {% for item in tops %}
-                        <option value="{{ item.id }}"
-                                data-image="{{ item.image_url }}"
-                                data-name="{{ item.name }}">
+                        <option value="{{ item.id }}" data-image="{{ item.image_url }}" data-name="{{ item.name }}">
                             {{ item.name }}
                         </option>
                     {% endfor %}
@@ -177,9 +193,7 @@
                 <select id="bottomSelect">
                     <option value="">-- Choose bottoms --</option>
                     {% for item in bottoms %}
-                        <option value="{{ item.id }}"
-                                data-image="{{ item.image_url }}"
-                                data-name="{{ item.name }}">
+                        <option value="{{ item.id }}" data-image="{{ item.image_url }}" data-name="{{ item.name }}">
                             {{ item.name }}
                         </option>
                     {% endfor %}
@@ -203,9 +217,7 @@
                 <select id="shoesSelect">
                     <option value="">-- Choose shoes --</option>
                     {% for item in shoes %}
-                        <option value="{{ item.id }}"
-                                data-image="{{ item.image_url }}"
-                                data-name="{{ item.name }}">
+                        <option value="{{ item.id }}" data-image="{{ item.image_url }}" data-name="{{ item.name }}">
                             {{ item.name }}
                         </option>
                     {% endfor %}
@@ -213,38 +225,39 @@
             </div>
         </article>
 
-        <!-- Outfit preview, full-width on bottom -->
-        <article class="item-card" style="grid-column: 1 / -1;">
-            <div class="item-info">
-                <div class="item-category">Outfit Preview</div>
-                <div class="item-name">Your Complete Look</div>
+    </div> <!-- END selector column -->
 
-   <div class="outfit-preview-box" id="outfitPreview">
-    <p class="outfit-empty-text" id="outfitEmptyText">
-        Select a top, bottoms, and shoes to see your outfit here.
-    </p>
+    <!-- RIGHT COLUMN: Outfit Preview -->
+    <article class="item-card">
+        <div class="item-info">
+            <div class="item-category">Outfit Preview</div>
+            <div class="item-name">Your Complete Look</div>
 
-    <div class="outfit-slot" id="topSlot" style="display: none;">
-        <img id="topImage" src="" alt="Selected top">
-        <p id="topLabel"></p>
-    </div>
+            <div class="outfit-preview-box" id="outfitPreview">
+                <p class="outfit-empty-text" id="outfitEmptyText">
+                    Select a top, bottoms, and shoes to see your outfit here.
+                </p>
 
-    <div class="outfit-slot" id="bottomSlot" style="display: none;">
-        <img id="bottomImage" src="" alt="Selected bottoms">
-        <p id="bottomLabel"></p>
-    </div>
+                <div class="outfit-slot" id="topSlot" style="display: none;">
+                    <img id="topImage" src="" alt="Selected top">
+                    <p id="topLabel"></p>
+                </div>
 
-    <div class="outfit-slot" id="shoesSlot" style="display: none;">
-        <img id="shoesImage" src="" alt="Selected shoes">
-        <p id="shoesLabel"></p>
-    </div>
-</div>
+                <div class="outfit-slot" id="bottomSlot" style="display: none;">
+                    <img id="bottomImage" src="" alt="Selected bottoms">
+                    <p id="bottomLabel"></p>
+                </div>
 
-
+                <div class="outfit-slot" id="shoesSlot" style="display: none;">
+                    <img id="shoesImage" src="" alt="Selected shoes">
+                    <p id="shoesLabel"></p>
+                </div>
             </div>
-        </article>
-    </section>
-</div>
+        </div>
+    </article>
+
+</section>
+
 
 <script>
         // IDs coming from Flask (empty strings if not set)
