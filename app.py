@@ -1,4 +1,4 @@
-from flask import Flask, render_template, send_from_directory, url_for, redirect, request, flash
+from flask import Flask, render_template, send_from_directory, url_for, redirect, request, flash, make_response
 from flask_uploads import UploadSet, IMAGES, configure_uploads
 from flask_wtf import FlaskForm
 from flask_wtf.file import FileField, FileRequired, FileAllowed
@@ -55,6 +55,7 @@ class UploadForm(FlaskForm):
 
 # --- Route to serve uploaded files ---
 @app.route('/uploads/<filename>')
+
 def get_file(filename):    
     return send_from_directory(app.config['UPLOADED_PHOTOS_DEST'], filename)
 
@@ -63,6 +64,7 @@ def get_file(filename):
 @login_required
 def upload_image():
     form = UploadForm()
+    theme = request.cookies.get("theme", "light")
     if form.validate_on_submit():
         # Save the uploaded image file
         filename = photos.save(form.photo.data)
@@ -84,12 +86,13 @@ def upload_image():
 
         return redirect(url_for('browse'))
 
-    return render_template('upload.html', form=form)
+    return render_template('upload.html', form=form, theme=theme)
 
 # --- Browse route ---
 @app.route('/')
 @login_required
 def browse():
+    theme = request.cookies.get("theme", "light")
     form = UploadForm() 
     items = ClothingItem.query.filter_by(user_id=current_user.id).all()
     # Build URL for images
@@ -104,8 +107,19 @@ def browse():
         'browse.html',
         items=items,
         item_count=len(items),
-        form=form
-    )
+        form=form,
+        theme=theme
+        )
+
+
+@app.route("/set_theme/<mode>")
+def set_theme(mode):
+    if mode not in ("light", "dark"):
+        mode = "light"
+    resp = make_response(redirect(request.referrer or url_for("browse")))
+    resp.set_cookie("theme", mode, max_age=86400)  
+    return resp
+
 
 # --- Delete Upload ---
 @app.route('/delete/<int:item_id>', methods=['POST'])
@@ -138,6 +152,7 @@ def delete_item(item_id):
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
+    theme = request.cookies.get("theme", "light")
     if current_user.is_authenticated:
         return redirect(url_for("browse"))
 
@@ -161,7 +176,7 @@ def login():
 
         return redirect(next_page)
 
-    return render_template("login.html", form=form)
+    return render_template("login.html", form=form, theme=theme)
 
 
 # --- Logout route ---
@@ -179,6 +194,7 @@ if __name__ == '__main__':
 
 @app.route("/register", methods=["GET", "POST"])
 def register():
+    theme = request.cookies.get("theme", "light")
     if current_user.is_authenticated:
         return redirect(url_for("browse"))
 
@@ -194,7 +210,7 @@ def register():
         login_user(user)
         return redirect(url_for("browse"))
 
-    return render_template("register.html", form=form)
+    return render_template("register.html", form=form, theme=theme)
 
 @app.route("/build-outfit")
 @login_required
@@ -204,6 +220,7 @@ def build_outfit():
     bottoms = ClothingItem.query.filter_by(category="bottoms").all()
     shoes = ClothingItem.query.filter_by(category="shoes").all()
     other = ClothingItem.query.filter_by(category="other").all
+    theme = request.cookies.get("theme", "light")
 
     # Add image_url to each item (same idea as in browse())
     for item in tops + bottoms + shoes:
@@ -215,7 +232,8 @@ def build_outfit():
         tops=tops,
         bottoms=bottoms,
         shoes=shoes,
-        other=other
+        other=other,
+        theme=theme
     )
 @app.route("/generate-outfit")
 @login_required
@@ -224,6 +242,7 @@ def generate_outfit():
     tops = ClothingItem.query.filter_by(user_id=current_user.id, category="tops").all()
     bottoms = ClothingItem.query.filter_by(user_id=current_user.id, category="bottoms").all()
     shoes = ClothingItem.query.filter_by(user_id=current_user.id, category="shoes").all()
+    theme = request.cookies.get("theme", "light")
 
     # Build image URLs
     for item in tops + bottoms + shoes:
@@ -248,5 +267,6 @@ def generate_outfit():
         shoes=shoes,
         selected_top_id=top.id,
         selected_bottom_id=bottom.id,
-        selected_shoes_id=shoe.id
+        selected_shoes_id=shoe.id,
+        theme=theme
     )
