@@ -6,12 +6,9 @@
     <title>Dress Me – Build Outfit</title>
 
     <link rel="stylesheet" href="{{ url_for('static', filename='css/branding.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/weather.css') }}">
 
-
-    {# <link rel="stylesheet" href="{{ url_for('static', filename='css/outfit.css') }}"> #}
-
-    <style>
-
+<style>
 .outfit-layout {
     display: grid;
     grid-template-columns: 320px 1fr; /* left column fixed, right column flexible */
@@ -118,7 +115,9 @@
                 height: 150px;
             }
         }
-    </style>
+
+</style>
+  
 </head>
 <body>
 <div class="container">
@@ -126,14 +125,14 @@
     <header class="header">
         <h1>Dress Me</h1>
         <div class="header-actions">
+            
+             <button class="custom-items-badge"
+                    onclick="openWeatherPrompt()">
+                WEATHER-BASED OUTFIT
+            </button>
             <button class="custom-items-badge"
                     onclick="window.location.href='{{ url_for('generate_outfit') }}'">
                 GENERATE RANDOM OUTFIT
-            </button>
-            <!-- Go to upload page -->
-            <button class="custom-items-badge"
-                    onclick="window.location.href='{{ url_for('upload_image') }}'">
-                UPLOAD
             </button>
             <!-- Back to browse page -->
             <button class="custom-items-badge"
@@ -258,6 +257,20 @@
 
 </section>
 
+    <!-- Weather Modal -->
+    <div id="weatherModal" class="custom-modal" style="display:none;">
+        <div class="custom-modal-box">
+            <h2>Select Weather</h2>
+            <p>Type one of: sunny, rain, cold, windy, casual</p>
+
+            <input id="weatherInput" class="weather-input" placeholder="Enter weather...">
+
+            <div class="modal-buttons">
+                <button onclick="submitWeather()" class="modal-btn confirm">OK</button>
+                <button onclick="closeWeatherModal()" class="modal-btn cancel">Cancel</button>
+            </div>
+        </div>
+    </div>
 
 <script>
         // IDs coming from Flask (empty strings if not set)
@@ -356,6 +369,38 @@ function updateOutfitPreview() {
         // If random outfit was generated, preselect dropdowns & show it
         applyPreselected();
     });
+
+    function openWeatherPrompt() {
+            const modal = document.getElementById("weatherModal");
+            const input = document.getElementById("weatherInput");
+            modal.style.display = "flex";
+            input.value = "";
+            input.focus();
+        }
+
+        function closeWeatherModal() {
+            const modal = document.getElementById("weatherModal");
+            modal.style.display = "none";
+        }
+
+        function submitWeather() {
+            const input = document.getElementById("weatherInput");
+            const w = input.value.toLowerCase().trim();
+            const allowed = ["sunny", "rain", "cold", "windy", "casual"];
+
+            if (!w) {
+                closeWeatherModal();
+                return;
+            }
+
+            if (!allowed.includes(w)) {
+                alert("Invalid weather. Use: sunny, rain, cold, windy, or casual.");
+                return;
+            }
+
+            closeWeatherModal();
+            window.location.href = `/generate-outfit?weather=${w}`;
+        }
 </script>
 </body>
 </html>

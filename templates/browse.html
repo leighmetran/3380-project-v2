@@ -5,9 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dress Me - Browse</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/branding.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/browse.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/weather.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/branding.css') }}">>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-betal/dist/css/bootstrap.min.css" rel="stylesheet"
           integrity="sha384-0evHe/
     X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous">
@@ -28,11 +26,6 @@
                 <button class="custom-items-badge"
                         onclick="window.location.href='{{ url_for('generate_outfit') }}'">
                     GENERATE OUTFIT
-                </button>
-
-                <button class="custom-items-badge"
-                        onclick="openWeatherPrompt()">
-                    WEATHER-BASED OUTFIT
                 </button>
 
                 <button class="custom-items-badge"
@@ -130,38 +123,6 @@
     </div>
 
     <script>
-        function openWeatherPrompt() {
-            const modal = document.getElementById("weatherModal");
-            const input = document.getElementById("weatherInput");
-            modal.style.display = "flex";
-            input.value = "";
-            input.focus();
-        }
-
-        function closeWeatherModal() {
-            const modal = document.getElementById("weatherModal");
-            modal.style.display = "none";
-        }
-
-        function submitWeather() {
-            const input = document.getElementById("weatherInput");
-            const w = input.value.toLowerCase().trim();
-            const allowed = ["sunny", "rain", "cold", "windy", "casual"];
-
-            if (!w) {
-                closeWeatherModal();
-                return;
-            }
-
-            if (!allowed.includes(w)) {
-                alert("Invalid weather. Use: sunny, rain, cold, windy, or casual.");
-                return;
-            }
-
-            closeWeatherModal();
-            window.location.href = `/generate-outfit?weather=${w}`;
-        }
-
         let currentPage = 1;
         let currentCategory = 'all';
         const itemsPerPage = 12;
