@@ -1,5 +1,9 @@
 <!DOCTYPE html>
+<<<<<<< HEAD
 <html lang="en">
+=======
+<html lang="en" class="{{ theme }}">
+>>>>>>> 955f16f (added dark mode)
 
 <head>
     <meta charset="UTF-8">
@@ -11,13 +15,18 @@
     X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous">
     <title>Flask Upload and Show Image</title>
 </head>
+<<<<<<< HEAD
 
 <body>
+=======
+<body class="{{ theme }}">
+>>>>>>> 955f16f (added dark mode)
     <div class="container">
         <!-- Header -->
         <header class="header">
             <h1>Dress Me</h1>
             <div class="header-actions">
+<<<<<<< HEAD
                 <button class="custom-items-badge"
                         onclick="window.location.href='{{ url_for('upload_image') }}'">
                     UPLOAD
@@ -32,9 +41,18 @@
                         onclick="window.location.href='{{ url_for('logout') }}'">
                     LOG OUT
                 </button>
+=======
+                <button class="custom-items-badge" onclick="window.location.href='{{ url_for('upload_image') }}'">UPLOAD</button>
+                <button class="custom-items-badge" onclick="window.location.href='{{ url_for('build_outfit') }}'">BUILD OUTFIT</button>
+                <button class="custom-items-badge" onclick="window.location.href='{{ url_for('logout') }}'">LOG OUT</button>
+>>>>>>> 955f16f (added dark mode)
             </div>
         </header>
-
+        <!-- Dark Mode-->
+        <nav>
+            <a href="{{ url_for('set_theme', mode='light') }}">☀️ Light</a>
+            <a href="{{ url_for('set_theme', mode='dark') }}">🌙 Dark</a>
+        </nav>
         <!-- Controls: Search, Filters -->
         <div class="controls">
             <div class="search-box">
