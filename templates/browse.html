@@ -23,11 +23,9 @@
                 <button class="custom-items-badge" onclick="window.location.href='{{ url_for('logout') }}'">LOG OUT</button>
             </div>
         </header>
-        <!-- Dark Mode-->
-        <nav>
-            <a href="{{ url_for('set_theme', mode='light') }}">☀️ Light</a>
-            <a href="{{ url_for('set_theme', mode='dark') }}">🌙 Dark</a>
-        </nav>
+
+
+
         <!-- Controls: Search, Filters -->
         <div class="controls">
             <div class="search-box">
@@ -243,5 +241,25 @@ document.addEventListener('click', () => {
         });
 
     </script>
+
+    <!-- Dark Mode-->
+        <!-- Theme Toggle Switch -->
+        <div class="theme-toggle-wrapper">
+            <label class="theme-switch">
+                <input type="checkbox" id="themeToggle" 
+                        {% if theme == "dark" %}checked{% endif %}>
+                <span class="slider">
+                    
+                </span>
+            </label>
+        </div>
+
+        <script>
+        document.getElementById("themeToggle").addEventListener("change", function () {
+            const mode = this.checked ? "dark" : "light";
+            window.location.href = "/set_theme/" + mode;
+        });
+        </script>
+
 </body>
 </html>

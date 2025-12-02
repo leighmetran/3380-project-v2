@@ -10,16 +10,25 @@
 </head>
 <body>
 <div class="container">
-    <!-- Header -->
+    <!-- Header --> 
     <header class="header">
         <h1>Dress Me</h1>
     </header>
 
     <!-- Dark Mode-->
-        <nav>
-            <a href="{{ url_for('set_theme', mode='light') }}">☀️ Light</a>
-            <a href="{{ url_for('set_theme', mode='dark') }}">🌙 Dark</a>
-        </nav>
+        <!-- Theme Toggle Switch -->
+        <label class="theme-switch">
+            <input type="checkbox" id="themeToggle" 
+                {% if theme == "dark" %}checked{% endif %}>
+            <span class="slider"></span>
+        </label>
+
+        <script>
+        document.getElementById("themeToggle").addEventListener("change", function () {
+            const mode = this.checked ? "dark" : "light";
+            window.location.href = "/set_theme/" + mode;
+        });
+        </script>
 
     <h1 style="margin-bottom: 20px; display: flex; justify-content: center;">Log In</h1>
     <!-- Optional flash messages -->
