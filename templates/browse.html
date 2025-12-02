@@ -1,6 +1,6 @@
 <!DOCTYPE html>
-<html lang="en">
-
+<html lang="en" class="{{ theme }}">
+    
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -11,27 +11,15 @@
     X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous">
     <title>Flask Upload and Show Image</title>
 </head>
-
-<body>
+<body class="{{ theme }}">
     <div class="container">
         <!-- Header -->
         <header class="header">
             <h1>Dress Me</h1>
             <div class="header-actions">
-                <button class="custom-items-badge"
-                        onclick="window.location.href='{{ url_for('upload_image') }}'">
-                    UPLOAD
-                </button>
-
-                <button class="custom-items-badge"
-                        onclick="window.location.href='{{ url_for('generate_outfit') }}'">
-                    GENERATE OUTFIT
-                </button>
-
-                <button class="custom-items-badge"
-                        onclick="window.location.href='{{ url_for('logout') }}'">
-                    LOG OUT
-                </button>
+                <button class="custom-items-badge" onclick="window.location.href='{{ url_for('upload_image') }}'">UPLOAD</button>
+                <button class="custom-items-badge" onclick="window.location.href='{{ url_for('build_outfit') }}'">BUILD OUTFIT</button>
+                <button class="custom-items-badge" onclick="window.location.href='{{ url_for('logout') }}'">LOG OUT</button>
             </div>
         </header>
 
@@ -256,6 +244,26 @@
         });
 
     </script>
+
+    <!-- Dark Mode-->
+        <!-- Theme Toggle Switch -->
+        <div class="theme-toggle-wrapper">
+            <label class="theme-switch">
+                <input type="checkbox" id="themeToggle" 
+                        {% if theme == "dark" %}checked{% endif %}>
+                <span class="slider">
+                    
+                </span>
+            </label>
+        </div>
+
+        <script>
+        document.getElementById("themeToggle").addEventListener("change", function () {
+            const mode = this.checked ? "dark" : "light";
+            window.location.href = "/set_theme/" + mode;
+        });
+        </script>
+
 </body>
 
 </html>
