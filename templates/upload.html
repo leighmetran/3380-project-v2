@@ -32,17 +32,30 @@
         
         <div id="uploadButtonContainer" style="text-align: center; margin-bottom: 20px;">
             <button type="button" id="customButton" class="custom-items-badge">
-                Upload Image
+                UPLOAD
              </button>
         </div>
 
         <div id="extraFields" style="display:none;">
-        <p style="text-align: center; margin-bottom: 20px;">{{ form.category(style="text-align: center;") }}</p>
-        <p style="text-align: center; margin-bottom: 20px;">{{ form.name(placeholder="Item Name", style="text-align: center;") }}</p>
-        <p style="text-align: center; margin-bottom: 20px;">{{ form.tags(placeholder="Tags", style="text-align: center;") }}</p>
+        <p style="text-align: center; margin-bottom: 20px;">    
+            {{ form.category(
+                style="width:50%; padding:10px 12px; border:2px solid #e0e0e0; border-radius:10px; outline:none; display:block; margin:0 auto; text-align:center; background:white;"
+            ) }}
+        </p>
+        <p style="margin-bottom: 20px;">
+            {{ form.name(
+                placeholder="Item Name",
+                style="width:75%; padding:10px 12px; border:2px solid #e0e0e0; border-radius:10px; outline:none; display:block; margin:0 auto; text-align:center;"
+            ) }}
+        </p>
+        <p style="margin-bottom: 20px;">
+            {{ form.tags(
+            placeholder="Tags", 
+            style="width:75%; padding:10px 12px; border:2px solid #e0e0e0; border-radius:10px; outline:none; display:block; margin:0 auto; text-align:center;"
+            ) }}</p>
         <p>
-            <button type="submit" class="custom-items-badge" style="width:100%; text-align:center;">
-                UPLOAD
+            <button type="submit" class="custom-items-badge" style="width:30%; text-align:center; display:block; margin:0 auto; text-align:center;">
+                SUBMIT
             </button>
         </p>
         </div>
