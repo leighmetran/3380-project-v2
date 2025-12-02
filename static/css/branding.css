@@ -474,3 +474,69 @@ cursor: pointer;
 .instructions-list li{
 margin-bottom: 5px;
 }
+
+/* DARK MODE OVERRIDES */
+html.dark .item-card,
+html.dark .selector-card {
+    background: #1e1e1e !important;
+    border-color: #333 !important;
+    color: #fff !important;
+}
+
+body.dark .search-box input {
+    background-color: #2b2b2b !important;
+    color: #fff !important;
+    border: 1px solid #555 !important;
+}
+
+html.dark .item-info,
+html.dark .item-category,
+html.dark .item-name {
+    color: #fff !important;
+}
+
+html.dark select,
+html.dark .selector-card select {
+    background: #2a2a2a !important;
+    color: #fff !important;
+    border-color: #444 !important;
+}
+
+html.dark .outfit-preview-box {
+    background: #1c1c1c !important;
+    border-color: #333 !important;
+}
+
+html.dark .outfit-empty-text {
+    color: #bbb !important;
+}
+
+html.dark #outfitPreview img {
+    background: none !important;
+}
+
+html.dark .tag {
+    background: #333 !important;
+    color: #fff !important;
+}
+
+html.dark button:not(.menu-option) {
+    background: #000 !important;
+    color: #fff !important;
+    border-color: #444 !important;
+}
+
+html.dark .ellipsis-btn,
+html.dark button.ellipsis-btn {
+    background: none !important;
+    color: black !important;
+    border: none !important;
+    filter: none !important;
+}
+
+
+
+
+
+
+
