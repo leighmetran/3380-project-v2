@@ -1,3 +1,14 @@
+<!--
+Upload Page for Dress Me
+
+This page allows users to:
+- Upload a clothing image
+- Preview the image before submission
+- Enter item category, name, and tags
+- View one-time first-use instructions
+
+-->
+
 <html lang="en" class="{{ request.cookies.get('theme', 'light') }}">
 <head>
     <meta charset="UTF-8">
@@ -35,7 +46,7 @@
                 UPLOAD
              </button>
         </div>
-
+        <!-- Hidden Form Fields Displayed After Image Selection -->
         <div id="extraFields" style="display:none;">
         <p style="text-align: center; margin-bottom: 20px;">    
             {{ form.category(
@@ -62,7 +73,7 @@
     </form>
     </div>
 
-    <!-- First-Time Instructions Message Box -->
+<!-- First-Time Instructions Message Box -->
 <div id="instructionsBox" class="message-box">
   <div class="message-content">
     <span class="close">&times;</span>
@@ -87,7 +98,6 @@
     customButton.addEventListener('click', () => {
     fileInput.click(); // Open file selector
     });
-    //image preview
     function previewImage(event) {
         const preview = document.getElementById('preview');
         const input = document.getElementById('photoInput');
@@ -108,8 +118,8 @@
         }
     }
 
-    //pop-up instructions
-    const box = document.getElementById("instructionsBox");
+//pop-up instructions
+const box = document.getElementById("instructionsBox");
 const closeBtn = document.querySelector(".close");
 
 // Check if they've already seen the instructions

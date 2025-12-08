@@ -1,3 +1,15 @@
+<!--
+Browse Page for Dress Me Digital Closet
+
+This page allows users to:
+- View all uploaded clothing items
+- Search by name, category, or tags
+- Filter by category
+- Delete clothing items
+- View clothing item details in a zoom modal
+- Toggle between light and dark mode
+
+-->
 <!DOCTYPE html>
 <html lang="en" class="{{ theme }}">
     
@@ -23,7 +35,7 @@
             </div>
         </header>
 
-        <!-- Controls: Search, Filters -->
+        <!-- Search Bar and Category Filters -->
         <div class="controls">
             <div class="search-box">
                 <input type="text" id="searchInput" placeholder="Search items..." onkeyup="filterItems()">
@@ -34,12 +46,9 @@
                 <button class="filter-btn" data-category="tops" onclick="filterByCategory('tops')">Tops</button>
                 <button class="filter-btn" data-category="bottoms" onclick="filterByCategory('bottoms')">Bottoms</button>
                 <button class="filter-btn" data-category="shoes" onclick="filterByCategory('shoes')">Shoes</button>
-                <button class="filter-btn" data-category="accessories" onclick="filterByCategory('accessories')">
-                    Accessories
-                </button>
+                <button class="filter-btn" data-category="accessories" onclick="filterByCategory('accessories')">Accessories</button>
                 <button class="filter-btn" data-category="other" onclick="filterByCategory('other')">Other</button>
             </div>
-
         </div>
 
         <!-- Items Grid -->
@@ -47,7 +56,7 @@
             {% for item in items %}
             <div class="item-card" data-category="{{ item.category }}" data-name="{{ item.name }}">
                 <img src="{{ item.image_url }}" alt="{{ item.name }}" class="item-image">
-                <!-- Delete Item-->
+                <!-- Delete Item Dropdown -->
                 <div class="item-menu">
                     <button class="ellipsis-btn">⋮</button>
                     <div class="item-menu-dropdown">
@@ -71,15 +80,8 @@
             {% endfor %}
         </div>
 
-        <!-- Pagination -->
-        <div class="pagination">
-            <button onclick="changePage(-1)" id="prevBtn">Previous</button>
-            <span class="page-number active" id="pageNumber">Page 1</span>
-            <button onclick="changePage(1)" id="nextBtn">Next</button>
-        </div>
-    </div>
 
-    <!-- Weather Modal -->
+    <!-- Weather Selection Modal -->
     <div id="weatherModal" class="custom-modal" style="display:none;">
         <div class="custom-modal-box">
             <h2>Select Weather</h2>
@@ -110,11 +112,24 @@
         </div>
     </div>
 
+    <!-- Theme Toggle Switch -->
+    <div class="theme-toggle-wrapper">
+        <label class="theme-switch">
+            <input type="checkbox" id="themeToggle" 
+                    {% if theme == "dark" %}checked{% endif %}>
+            <span class="slider">
+                
+            </span>
+        </label>
+    </div>
+
+    <!-- JavaScript for Filtering, Sorting, Modals, and Theme Toggle -->
     <script>
         let currentPage = 1;
         let currentCategory = 'all';
         const itemsPerPage = 12;
 
+        // Filters items based on selected category
         function filterByCategory(category) {
             currentCategory = category;
             const buttons = document.querySelectorAll('.filter-btn');
@@ -130,7 +145,7 @@
                 }
             });
         }
-
+        // Filters items based on search input (name, category, or tags)
         function filterItems() {
             const searchTerm = document.getElementById('searchInput').value.toLowerCase();
             const items = document.querySelectorAll('.item-card');
@@ -153,33 +168,6 @@
             });
         }
 
-        function sortItems(sortBy) {
-            const grid = document.getElementById('itemsGrid');
-            const items = Array.from(document.querySelectorAll('.item-card'));
-
-            items.sort((a, b) => {
-                if (sortBy === 'name') {
-                    return a.dataset.name.localeCompare(b.dataset.name);
-                } else if (sortBy === 'category') {
-                    return a.dataset.category.localeCompare(b.dataset.category);
-                }
-                return 0;
-            });
-
-            items.forEach(item => grid.appendChild(item));
-        }
-
-        function changePage(direction) {
-            currentPage += direction;
-            document.getElementById('pageNumber').textContent = `Page ${currentPage}`;
-            document.getElementById('prevBtn').disabled = currentPage === 1;
-        }
-
-        function resetFilters() {
-            document.getElementById('searchInput').value = '';
-            filterByCategory('all');
-            document.querySelector('.sort-select').value = 'recent';
-        }
 
         document.querySelector('[data-category="all"]').classList.add('active');
 
@@ -243,21 +231,8 @@
             });
         });
 
-    </script>
 
-    <!-- Dark Mode-->
-        <!-- Theme Toggle Switch -->
-        <div class="theme-toggle-wrapper">
-            <label class="theme-switch">
-                <input type="checkbox" id="themeToggle" 
-                        {% if theme == "dark" %}checked{% endif %}>
-                <span class="slider">
-                    
-                </span>
-            </label>
-        </div>
-
-        <script>
+        // Dark Mode
         document.getElementById("themeToggle").addEventListener("change", function () {
             const mode = this.checked ? "dark" : "light";
             window.location.href = "/set_theme/" + mode;

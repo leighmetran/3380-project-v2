@@ -1,4 +1,13 @@
+<!--
+Login Page for Dress Me Digital Closet
 
+This page allows users to:
+- Log into their existing account
+- View authentication error messages
+- Toggle between light and dark mode
+- Navigate to the registration page
+
+-->
 <!DOCTYPE html>
 <html lang="en" class="{{ request.cookies.get('theme', 'light') }}">
 
@@ -15,8 +24,7 @@
         <h1>Dress Me</h1>
     </header>
 
-    <!-- Dark Mode-->
-        <!-- Theme Toggle Switch -->
+    <!-- Dark Mode and Theme Toggle Switch -->
         <label class="theme-switch">
             <input type="checkbox" id="themeToggle" 
                 {% if theme == "dark" %}checked{% endif %}>
@@ -24,6 +32,7 @@
         </label>
 
         <script>
+        // Toggles light and dark mode by updating a cookie through Flask
         document.getElementById("themeToggle").addEventListener("change", function () {
             const mode = this.checked ? "dark" : "light";
             window.location.href = "/set_theme/" + mode;
@@ -31,7 +40,7 @@
         </script>
 
     <h1 style="margin-bottom: 20px; display: flex; justify-content: center;">Log In</h1>
-    <!-- Optional flash messages -->
+    <!-- Flash messages -->
     {% with messages = get_flashed_messages() %}
         {% if messages %}
             <ul style="margin-bottom: 20px; color: red; list-style: none;">
@@ -44,8 +53,6 @@
 
     <!-- Login Form -->
     <form method="POST" action="{{ url_for('login') }}">
-        <!-- If using Flask-WTF, include CSRF token -->
-        {# {{ form.hidden_tag() }} #}
 
         <div style="margin-bottom: 15px;">
             <label for="username" style="display:block; margin-bottom:5px; font-weight:600;">

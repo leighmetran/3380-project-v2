@@ -1,3 +1,15 @@
+"""
+Main Flask application for Dress Me
+
+This app allows users to:
+- Register and log in
+- Upload and store clothing items with images and tags
+- Browse their personal closet
+- Build and generate outfits based on weather
+- Toggle light and dark themes
+
+"""
+
 from flask import Flask, render_template, send_from_directory, url_for, redirect, request, flash, make_response
 from flask_uploads import UploadSet, IMAGES, configure_uploads
 from flask_wtf import FlaskForm
@@ -10,8 +22,6 @@ from models import db, ClothingItem, User
 import os
 import json
 import random
-from flask import render_template, redirect, url_for, flash
-from flask_login import login_required, current_user
 
 app = Flask(__name__)
 app.config['SECRET_KEY']= 'asklsh'
@@ -37,7 +47,7 @@ def load_user(user_id):
 photos = UploadSet('photos', IMAGES)
 configure_uploads(app, photos)
 
-# --- Form for uploads ---
+# --- Form for clothing uploads ---
 class UploadForm(FlaskForm):
     name = StringField("Item Name")
     category = SelectField(
@@ -55,7 +65,6 @@ class UploadForm(FlaskForm):
 
 # --- Route to serve uploaded files ---
 @app.route('/uploads/<filename>')
-
 def get_file(filename):    
     return send_from_directory(app.config['UPLOADED_PHOTOS_DEST'], filename)
 
@@ -141,7 +150,6 @@ def delete_item(item_id):
         # Delete the item from the database
         db.session.delete(item)
         db.session.commit()
-        flash(f"{item.name} has been deleted.", "success")
     except Exception as e:
         db.session.rollback()
         flash("Error deleting item.", "danger")
@@ -219,7 +227,7 @@ def build_outfit():
     tops = ClothingItem.query.filter_by(category="tops").all()
     bottoms = ClothingItem.query.filter_by(category="bottoms").all()
     shoes = ClothingItem.query.filter_by(category="shoes").all()
-    other = ClothingItem.query.filter_by(category="other").all
+    other = ClothingItem.query.filter_by(category="other").all()
     theme = request.cookies.get("theme", "light")
 
     # Add image_url to each item (same idea as in browse())
